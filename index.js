@@ -38,9 +38,12 @@ app.get('/', function (req, res) {
     });
   })
   .then(function(response) {
-    // the request was successful!
     console.log(response.data);
-    res.send('OK!');
+    // the request was successful!
+    res.json({
+      title: 'Successfully Posted to Slack',
+      text: 'You\'ve just hooked up Googiri, wit.ai, IFTTT, and Slack!',
+    });
   })
   .catch(function(err) {
     console.error(err);
