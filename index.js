@@ -5,6 +5,7 @@ let express = require('express');
 let app = express();
 
 let WIT_AI_TOKEN = process.env.WIT_AI_TOKEN;
+let IFTTT_MAKER_KEY = process.env.IFTTT_MAKER_KEY;
 
 app.get('/', function (req, res) {
 
@@ -22,16 +23,28 @@ app.get('/', function (req, res) {
     },
   })
   .then(function(response) {
-    // for now, just print the response data
-    console.log(response.data);
+    // let's find the message we want to send
+    let messageBody = response.data.outcomes[0].entities.message_body[0].value;
+    console.log(`Announcing to slack: ${messageBody}`);
+    return messageBody;
   })
-  .then(function() {
-    // tell Googiri we're done by completing the request
-    res.send('OK');
+  .then(function(message) {
+    // lets tell IFTTT to post the message
+    return axios.get(`https://maker.ifttt.com/trigger/incoming_slack_message/with/key/${IFTTT_MAKER_KEY}`, {
+      params: {
+        'value1': 'Matt wants to say:',
+        'value2': message,
+      },
+    });
+  })
+  .then(function(response) {
+    // the request was successful!
+    console.log(response.data);
+    res.send('OK!');
   })
   .catch(function(err) {
     console.error(err);
-    res.send('Hello World!');
+    res.send('OH NOES');
   });
 
 });
