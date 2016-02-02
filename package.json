@@ -9,6 +9,7 @@
   "author": "Matt Condon <m@cond.in> (http://mat.tc)",
   "license": "ISC",
   "dependencies": {
+    "axios": "^0.9.1",
     "express": "^4.13.4"
   }
 }
